@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity Intermediate Quiz — Abdulrahman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --paper: #F5EFE1;
+    --paper-2: #EBE3D0;
+    --paper-3: #E2D9C2;
+    --accent: #021630;
+    --yellow: #e89f32;
+    --blue: #5BB8FF;
+    --orange: #FF8B3D;
+    --green: #3DA35D;
+    --red: #D64545;
+    --border: 3px solid var(--ink);
+    --shadow-sm: 4px 4px 0 var(--ink);
+    --shadow: 6px 6px 0 var(--ink);
+    --shadow-lg: 10px 10px 0 var(--ink);
+    --font-display: 'Archivo Black', 'Space Grotesk', sans-serif;
+    --font-body: 'Space Grotesk', -apple-system, sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(rgba(14,14,14,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,14,14,0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .container { width: 100%; max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  main.container { display: flex; flex: 1; flex-direction: column; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    border-bottom: var(--border);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    max-width: 860px;
+    margin: 0 auto;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--ink);
+    border-radius: 7px;
+    background: var(--accent);
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+  }
+  .header-meta {
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0.65;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- Timer / progress bar ---------- */
+  .quiz-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 0 10px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 7px 15px;
+    background: var(--paper);
+    font-weight: 600;
+    font-size: 0.88rem;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .pill.timer.low {
+    background: #FFE5E5;
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .progress-track {
+    width: 100%;
+    height: 12px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper-2);
+    overflow: hidden;
+    margin-bottom: 26px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  /* ---------- Question card ---------- */
+  .q-card {
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--paper);
+    box-shadow: var(--shadow);
+    padding: 28px 26px;
+    margin-bottom: 22px;
+    animation: slideIn 0.3s ease both;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  .q-number {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: clamp(1.05rem, 3vw, 1.3rem);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 22px;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper-2);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 13px 16px;
+    transition: transform 0.12s ease, background 0.12s;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .option:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .option:disabled { cursor: default; }
+  .option.selected {
+    background: #DCEBFF;
+    border-color: var(--accent);
+    box-shadow: 2px 2px 0 var(--accent);
+  }
+  .option-letter {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    margin-top: 1px;
+  }
+
+  /* ---------- Nav buttons ---------- */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 12px 22px;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .btn-primary { background: var(--accent); color: var(--paper); }
+  .btn-yellow { background: var(--yellow); }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 4px 4px 0 var(--ink) !important;
+  }
+
+  /* ---------- Start / end screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; margin-block: auto; }
+
+  .start-card, .end-card {
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--paper);
+    box-shadow: var(--shadow-lg);
+    padding: 40px 32px;
+    text-align: center;
+    margin: 40px 0;
+  }
+  .start-card h1, .end-card h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .start-card p, .end-card p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 26px;
+  }
+  .start-meta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  .start-meta .pill { box-shadow: 2px 2px 0 var(--ink); }
+
+  /* ---------- Results ---------- */
+  .score-big {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 1;
+    margin: 10px 0 6px;
+  }
+  .score-sub { font-size: 1rem; opacity: 0.7; margin-bottom: 24px; }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin: 26px 0;
+  }
+  .review-item {
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: var(--paper-2);
+    box-shadow: 2px 2px 0 var(--ink);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .review-item.correct { border-left: 6px solid var(--green); }
+  .review-item.wrong { border-left: 6px solid var(--red); }
+  .review-item .ri-head {
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .review-item .ri-status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1.5px solid var(--ink);
+    white-space: nowrap;
+  }
+  .review-item.correct .ri-status { background: #D9F2E3; }
+  .review-item.wrong .ri-status { background: #FFE5E5; }
+  .review-item .ri-answer { opacity: 0.85; margin-top: 4px; }
+  .review-item .ri-explain {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(14,14,14,0.25);
+    font-size: 0.86rem;
+    opacity: 0.8;
+  }
+
+  /* ---------- Certificate ---------- */
+  #cert-area {
+    border: var(--border);
+    border-radius: 18px;
+    background: #FFFDF7;
+    box-shadow: var(--shadow-lg);
+    padding: 44px 36px;
+    text-align: center;
+    margin: 30px 0;
+  }
+  #cert-area .cert-top {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #B8860B;
+    margin-bottom: 18px;
+  }
+  #cert-area h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin-bottom: 6px;
+  }
+  #cert-area .cert-sub { font-size: 0.92rem; opacity: 0.7; margin-bottom: 20px; }
+  #cert-area .cert-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    color: #B8860B;
+    border-bottom: 3px solid #D4A017;
+    display: inline-block;
+    padding: 0 20px 6px;
+    margin-bottom: 18px;
+  }
+  #cert-area .cert-body {
+    max-width: 520px;
+    margin: 0 auto 22px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  #cert-area .cert-score {
+    display: inline-block;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 26px;
+  }
+  #cert-area .cert-footer {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.84rem;
+    margin-top: 10px;
+  }
+  #cert-area .cert-line {
+    border-top: 2px solid var(--ink);
+    padding-top: 6px;
+    min-width: 150px;
+    opacity: 0.8;
+  }
+
+  /* ---------- Utilities ---------- */
+  .hidden { display: none !important; }
+
+  @media (max-width: 560px) {
+    .container { padding: 0 16px; }
+    .q-card { padding: 20px 16px; }
+    .option { font-size: 0.93rem; padding: 11px 13px; }
+    .start-card, .end-card { padding: 28px 18px; }
+    .nav-row { flex-direction: column; }
+    .nav-row .btn { width: 100%; }
+  }
+
+  @media print {
+    body { background: #fff !important; }
+    .site-header, .quiz-bar, .progress-track, .nav-row, .no-print { display: none !important; }
+    .screen { display: none !important; }
+    #screen-cert { display: block !important; }
+    #cert-area { box-shadow: none; border: 4px double #D4A017; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header no-print">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">NG</div>
+      <span>NextGen Academy</span>
+    </div>
+    <div class="header-meta">Student: Abdulrahman &nbsp;·&nbsp; 40 questions &nbsp;·&nbsp; 30 min</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ================= START SCREEN ================= -->
+  <section class="screen active" id="screen-start">
+    <div class="start-card">
+      <h1>NextGen Academy <br>Unity Intermediate Quiz</h1>
+      <p>This quiz covers everything from your 12‑week course:<br>2D Race · 3D Collect &amp; Deliver · Safe Publishing.</p>
+
+      <div class="start-meta">
+        <span class="pill">📋 40 questions</span>
+        <span class="pill">⏱ 30 minutes</span>
+        <span class="pill">⭐ 1 point each</span>
+      </div>
+
+      <button class="btn btn-primary" id="btn-start" style="font-size:1.05rem; padding:14px 36px;">Start Quiz →</button>
+    </div>
+  </section>
+
+  <!-- ================= QUIZ SCREEN ================= -->
+  <section class="screen" id="screen-quiz">
+    <div class="quiz-bar">
+      <span class="pill timer" id="timer-pill">⏱ <span id="timer">30:00</span></span>
+      <span class="pill">Question <span id="q-pos">1</span> of 40</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="q-card" id="q-card">
+      <div class="q-number" id="q-number">Question 1</div>
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" id="btn-prev" disabled>← Previous</button>
+      <button class="btn btn-primary" id="btn-next">Next →</button>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS SCREEN ================= -->
+  <section class="screen" id="screen-results">
+    <div class="end-card">
+      <h1 id="result-title">Quiz Complete!</h1>
+      <div class="score-big" id="result-score">0 / 40</div>
+      <div class="score-sub" id="result-pct">0%</div>
+      <p id="result-message" style="max-width:480px; margin:0 auto 10px;"></p>
+
+      <div class="review-list" id="review-list"></div>
+
+      <div class="nav-row" style="justify-content:center;">
+        <button class="btn" id="btn-restart">↻ Try Again</button>
+        <!--<button class="btn btn-yellow" id="btn-cert">View Certificate →</button>-->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CERTIFICATE SCREEN ================= -->
+  <section class="screen" id="screen-cert">
+    <div id="cert-area">
+      <div class="cert-top">★ Certificate of Achievement ★</div>
+      <h2>NextGen Academy <br>Unity Intermediate Quiz</h2>
+      <div class="cert-sub">This certificate is proudly presented to</div>
+      <div class="cert-name">Abdulrahman</div>
+      <div class="cert-body">
+        For completing the <strong>NextGen Academy Unity Intermediate Curriculum Quiz</strong> and showing
+        fantastic effort, curiosity, and dedication in learning game development.
+        You built 2D and 3D worlds, learned safe publishing, and finished two full games — amazing work!
+      </div>
+      <div class="cert-score" id="cert-score">Score: 0 / 40</div>
+      <div class="cert-footer">
+        <div class="cert-line">Teacher</div>
+        <div class="cert-line" id="cert-date">Date</div>
+      </div>
+    </div>
+
+    <div class="nav-row no-print" style="justify-content:center;">
+      <button class="btn btn-yellow" id="btn-print">🖨 Print Certificate</button>
+      <button class="btn" id="btn-back-results">← Back to Results</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* =========================================================
+   QUIZ DATA — 40 questions based on the Intermediate Curriculum
+   ========================================================= */
+const QUESTIONS = [
+  // ---------- Unit 1: 2D Refresher (Week 1) ----------
+  {
+    q: "What is Unity?",
+    options: [
+      "A video game console like a PlayStation",
+      "A game engine where you can build 2D and 3D games",
+      "A drawing app for making pictures"
+    ],
+    correct: 1,
+    explain: "Unity is a game engine — a program full of tools for building 2D and 3D games."
+  },
+  {
+    q: "In a 2D game, what do we call a flat picture used for a character or object?",
+    options: ["A cube", "A sprite", "A light"],
+    correct: 1,
+    explain: "Sprites are the flat 2D pictures used for characters, coins, doors, and everything else."
+  },
+  {
+    q: "What does the Main Camera do in a 2D game?",
+    options: [
+      "It makes the game louder",
+      "It follows the player and shows the game world",
+      "It changes the colour of the player"
+    ],
+    correct: 1,
+    explain: "The camera is the player's window into the game. Making it follow the player keeps the action on screen."
+  },
+  {
+    q: "What is a Capsule Collider 2D used for in a 2D game?",
+    options: [
+      "To find Haaland",
+      "To make the player move and detect collisions with the environment",
+      "To make the player run faster"
+    ],
+    correct: 1,
+    explain: "Capsule Colliders 2D are used for character movement and collision detection in 2D games."
+  },
+  {
+    q: "True or False: A Rigidbody component makes objects move with physics, like falling or bouncing.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Yes! Add a Rigidbody and gravity, collisions, and bouncing start working automatically."
+  },
+  {
+    q: "In Unity, what is an IEnumerator used for?",
+    options: [
+      "To set timers and coroutines for delays and animations",
+      "To open a locked door",
+      "To defeat enemies"
+    ],
+    correct: 1,
+    explain: "IEnumerators are used to create coroutines, which let you run code over time — perfect for delays and animations."
+  },
+  {
+    q: "What does an NPC do in a game?",
+    options: [
+      "It's a Non-Player Character that can give you information or a quest",
+      "It's a type of enemy that chases you",
+      "It's a power-up that makes you invisible"
+    ],
+    correct: 0,
+    explain: "NPC means Non-Player Character — a friendly character controlled by the game who talks to you."
+  },
+
+  {
+    q: "In your 2D refresher game, you wanted the player to jump. What does the player need to stand on?",
+    options: [
+      "A platform/object/ground with a Collider",
+      "A light",
+      "A sprite"
+    ],
+    correct: 0,
+    explain: "Colliders are invisible shapes that let objects bump into each other. No collider means you fall straight through."
+  },
+  {
+    q: "What is the Rigidbody component used for in a 3D game?",
+    options: [
+      "To make objects move with physics",
+      "To change the colour of objects",
+      "To play sound effects"
+    ],
+    correct: 0,
+    explain: "A Rigidbody gives a GameObject physical behaviour — gravity, collisions, and forces."
+  },
+  {
+    q: "True or False: In Unity, a Trigger is a type of Collider that lets objects pass through but still detects when something enters.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Triggers detect overlap without blocking movement — perfect for pickups, checkpoints, and safe zones."
+  },
+
+  // ---------- Unit 2: Game 1 — 2D Race (Weeks 3–6) ----------
+  {
+    q: "What does a Camera Follow script do in a 2D race game?",
+    options: [
+      "It makes the camera zoom in and out",
+      "It keeps the camera centred on the player as they move",
+      "It changes the camera's background colour"
+    ],
+    correct: 1,
+    explain: "Camera follow keeps the player on screen, which is essential for a smooth race game."
+  },
+  {
+    q: "In your 2D race game, what type of enemy/Ai behaviour did you use?",
+    options: [
+      "Enemies that solve puzzles",
+      "Simple race and path finding enemies",
+      "Enemies that build new levels"
+    ],
+    correct: 1,
+    explain: "Simple enemies that race after the player."
+  },
+  {
+    q: "What is a slider bar used for in a 2D game?",
+    options: [
+      "To show how much time is left",
+      "To show the status of the player has left",
+      "To show the player's score"
+    ],
+    correct: 1,
+    explain: "A slider bar is a UI element that visually shows the player's progress or status."
+  },
+  {
+    q: "What is a list?",
+    options: [
+      "A collection of items that can be used in a game",
+      "The background music of a game",
+      "A type of game object"
+    ],
+    correct: 0,
+    explain: "Lists are collections of items that can be used in a game."
+  },
+  {
+    q: "What is an animator?",
+    options: [
+      "A component that controls the movement and animation of a 3D model",
+      "A type of enemy in the game",
+      "A tool for creating sound effects"
+    ],
+    correct: 0,
+    explain: "An animator is a component that controls the movement and animation of a 3D model."
+  },
+  {
+    q: "In your 3D delivery game, How did you get new characters like rami to import into the game?",
+    options: [
+      "A website known as Mixamo",
+      "A website known as the Unity Asset Store",
+      "An Ai chatbot known as CHATGPT"
+    ],
+    correct: 0,
+    explain: "New 3D characters were added from Mixamo"
+  },
+  {
+    q: "How can you identify a function/method in a Unity script",
+    options: [
+      "A line/block of code that ends with a pair of parentheses ()",
+      "A line of code that ends with a semicolon ;",
+      "A line of code that starts with a capital letter"
+    ],
+    correct: 0,
+    explain: "A function/method is a line of code that ends with a pair of parentheses ()."
+  },
+  {
+    q: "How does one identify a variable in a Unity script?",
+    options: [
+      "A line of code that ends with a semicolon ;",
+      "A line of code that starts with a capital letter",
+      "A line/block of code that ends with a pair of parentheses ()"
+    ],
+    correct: 0,
+    explain: "A variable is a line of code that ends with a semicolon ;"
+  },
+  {
+    q: "What is a 'Win Screen'?",
+    options: [
+      "A screen that appears when you lose the game",
+      "A screen that appears when you complete the game or a level",
+      "A screen where you choose your character"
+    ],
+    correct: 1,
+    explain: "A win screen celebrates the player's success and often gives options to play again or go to the next level."
+  },
+  {
+    q: "What is a 'component' in Unity?",
+    options: [
+      "An attribute that is attached to a GameObject to give it specific functionality",
+      "Small visual and audio effects that make the game feel more satisfying",
+      "The main character's energy"
+    ],
+    correct: 1,
+    explain: "A component in Unity is a reusable piece of functionality that can be attached to a GameObject."
+  },
+  {
+    q: "What does a prefab do?",
+    options: [
+      "It creates a reusable duplicate of a GameObject with all its components and settings",
+      "It makes the game run faster",
+      "It changes the game's difficulty"
+    ],
+    correct: 0,
+    explain: "A prefab is a reusable asset that contains a GameObject with all its components and settings."
+  },
+
+  {
+    q: "What is top-down 2D movement?",
+    options: [
+      "The camera looks down at the player from above",
+      "The player moves only up and down",
+      "The game is played in first-person view"
+    ],
+    correct: 0,
+    explain: "Top-down means the camera is positioned above the player, looking down at the action."
+  },
+  {
+    q: "What is a NavMesh/Waypoint used for in Unity?",
+    options: [
+      "To create 3D models",
+      "To help AI characters find paths around the level",
+      "To play background music"
+    ],
+    correct: 1,
+    explain: "A NavMesh is a navigation mesh that lets AI characters calculate paths and move around obstacles."
+  },
+  {
+    q: "In your 3D Delivery game, what did you collect?",
+    options: ["Coins", "Crystals", "Stars"],
+    correct: 1,
+    explain: "Collecting crystals was the main goal in the 3D Collect & Deliver game."
+  },
+  {
+    q: "What is a Safe Zone in a 3D game?",
+    options: [
+      "An area where the player is safe from enemies",
+      "A zone where the player cannot move",
+      "A zone that makes the player invisible"
+    ],
+    correct: 0,
+    explain: "Safe zones give players a moment to breathe and plan, free from enemy danger."
+  },
+  {
+    q: "What is a UI timer used for in a survival game?",
+    options: [
+      "To show how long the player has been playing",
+      "To show how much time the player has left to survive",
+      "To show the player's score"
+    ],
+    correct: 1,
+    explain: "The timer counts down, creating tension — survive until it reaches zero to win."
+  },
+  {
+    q: "True or False: In your 3D game, AI NPC can spawn in different places around the level.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Spawning NPC at different points keeps the game challenging and unpredictable."
+  },
+  {
+    q: "What is a mini-map?",
+    options: [
+      "A small version of the level shown on the screen",
+      "A map you draw on paper",
+      "A type of enemy"
+    ],
+    correct: 0,
+    explain: "A mini-map is a small map displayed on the UI that helps the player navigate the level."
+  },
+  {
+    q: "What are Win and Lose conditions?",
+    options: [
+      "Rules that decide when the player wins or loses the game",
+      "The buttons used to start and stop the game",
+      "The colours of the UI"
+    ],
+    correct: 0,
+    explain: "Win and Lose conditions define what the player must do to succeed and what causes failure."
+  },
+  {
+    q: "What does level design involve? like duplicating powerups/coins or Ai waypoints in a scene do to your game?",
+    options: [
+      "Designing the look and layout of a game level, including obstacles, enemies, and rewards",
+      "Writing the game's story",
+      "Creating the game's characters"
+    ],
+    correct: 0,
+    explain: "Level design is about planning the layout, obstacles, and flow of a game level."
+  },
+  {
+    q: "True or False: Obstacles like trees, rocks, and bridges can be used to make a 3D level more interesting.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Obstacles add variety, challenge, and visual interest to a 3D level."
+  },
+
+  {
+    q: "What does WebGL let people do with your game?",
+    options: [
+      "Play it in a web browser like Chrome or Firefox",
+      "Play it with a potato",
+      "Play it with Abdullah"
+    ],
+    correct: 0,
+    explain: "WebGL builds let anyone play your game straight from a link — no download needed."
+  },
+  {
+    q: "What is a scene in unity?",
+    options: [
+      "A single level or environment in the game",
+      "A type of enemy",
+      "A visual effect"
+    ],
+    correct: 0,
+    explain: "A scene in Unity is a single level or environment in the game."
+  },
+  {
+    q: "What is a 'build' of your game?",
+    options: [
+      "The folder with all the files needed to play your game",
+      "The music you made for the game",
+      "The story of your game"
+    ],
+    correct: 0,
+    explain: "Building packages your game into a folder of files that other people can run."
+  },
+  {
+    q: "What does 'compress the build folder' mean?",
+    options: [
+      "Make the folder smaller by zipping it",
+      "Delete all the files inside",
+      "Change the folder's colour"
+    ],
+    correct: 0,
+    explain: "Compressing (zipping) the folder makes it smaller and easier to upload."
+  },
+  {
+    q: "What should you add to your itch.io game page?",
+    options: [
+      "Screenshots, a description, and a controls list",
+      "Only the game file",
+      "Your home address"
+    ],
+    correct: 0,
+    explain: "Screenshots, a description, and a controls list help people understand and enjoy your game."
+  },
+  {
+    q: "True or False: In a game showcase, you should give your friends positive feedback about their games.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Kind, positive feedback helps everyone grow and feel proud of their work."
+  },
+  {
+    q: "What is 'polish' in game development?",
+    options: [
+      "Making the game look and feel better with particles, sounds, and a nice UI",
+      "Making the game harder",
+      "Deleting parts of the game"
+    ],
+    correct: 0,
+    explain: "Polish is all the small details that make a game feel amazing to play."
+  },
+  {
+    q: "What is the purpose of a Game Over screen?",
+    options: [
+      "To tell the player the game has ended and offer options like restart",
+      "To show the game's credits",
+      "To change the game's settings"
+    ],
+    correct: 0,
+    explain: "A Game Over screen signals the end of a run and usually lets the player try again."
+  },
+  {
+    q: "True or False: Built games from Unity can be published safely on itch.io.",
+    options: ["True", "False"],
+    correct: 0,
+    explain: "Itch.io is a safe platform for sharing your Unity games with friends and the public."
+  },
+  {
+    q: "What are expected to achieve by the end of the Intermediate course?",
+    options: [
+      "Two polished games published safely on itch.io",
+      "One small prototype",
+      "A 3D movie"
+    ],
+    correct: 0,
+    explain: "You built and published two full games — a 2D adventure and a 3D collect & survive game."
+  }
+];
+
+const TOTAL_TIME = 30 * 60; // 30 minutes
+
+let state = {
+  current: 0,
+  answers: new Array(QUESTIONS.length).fill(null),
+  timeLeft: TOTAL_TIME,
+  timerId: null,
+  finished: false
+};
+
+/* =========================================================
+   DOM REFS
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const screens = {
+  start: $('screen-start'),
+  quiz: $('screen-quiz'),
+  results: $('screen-results'),
+  cert: $('screen-cert')
+};
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function updateTimerDisplay() {
+  const el = $('timer');
+  el.textContent = formatTime(Math.max(0, state.timeLeft));
+  $('timer-pill').classList.toggle('low', state.timeLeft <= 60);
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+function startTimer() {
+  clearInterval(state.timerId);
+  state.timeLeft = TOTAL_TIME;
+  updateTimerDisplay();
+  state.timerId = setInterval(() => {
+    state.timeLeft--;
+    updateTimerDisplay();
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timerId);
+      finishQuiz(true);
+    }
+  }, 1000);
+}
+
+/* =========================================================
+   RENDER QUESTION
+   ========================================================= */
+function renderQuestion() {
+  const i = state.current;
+  const q = QUESTIONS[i];
+
+  $('q-number').textContent = 'Question ' + (i + 1);
+  $('q-pos').textContent = i + 1;
+  $('q-text').textContent = q.q;
+
+  // progress
+  const answered = state.answers.filter(a => a !== null).length;
+  $('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  // options
+  const box = $('options');
+  box.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.type = 'button';
+    if (state.answers[i] === idx) btn.classList.add('selected');
+    btn.innerHTML = '<span class="option-letter">' + String.fromCharCode(65 + idx) + '</span><span>' + opt + '</span>';
+    btn.addEventListener('click', () => selectOption(idx));
+    box.appendChild(btn);
+  });
+
+  // nav buttons
+  $('btn-prev').disabled = (i === 0);
+  $('btn-next').textContent = (i === QUESTIONS.length - 1) ? 'Finish ✓' : 'Next →';
+}
+
+function selectOption(idx) {
+  state.answers[state.current] = idx;
+  // re-render options to show selection
+  const box = $('options');
+  Array.from(box.children).forEach((btn, i) => {
+    btn.classList.toggle('selected', i === idx);
+  });
+  // update progress
+  const answered = state.answers.filter(a => a !== null).length;
+  $('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+function goNext() {
+  if (state.current < QUESTIONS.length - 1) {
+    state.current++;
+    renderQuestion();
+  } else {
+    // finish
+    const unanswered = state.answers.filter(a => a === null).length;
+    if (unanswered > 0) {
+      if (!confirm(`You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Finish anyway?`)) return;
+    }
+    finishQuiz(false);
+  }
+}
+
+function goPrev() {
+  if (state.current > 0) {
+    state.current--;
+    renderQuestion();
+  }
+}
+
+/* =========================================================
+   FINISH
+   ========================================================= */
+function finishQuiz(timeUp) {
+  if (state.finished) return;
+  state.finished = true;
+  clearInterval(state.timerId);
+
+  // calculate score
+  let correct = 0;
+  state.answers.forEach((ans, i) => {
+    if (ans === QUESTIONS[i].correct) correct++;
+  });
+  const total = QUESTIONS.length;
+  const pct = Math.round(correct / total * 100);
+
+  // update results screen
+  $('result-score').textContent = correct + ' / ' + total;
+  $('result-pct').textContent = pct + '%';
+
+  let title, msg;
+  if (pct >= 87) {
+    title = 'Outstanding! 🏆';
+    msg = 'Incredible work, Abdulrahman! You really know your Unity skills.';
+  } else if (pct >= 67) {
+    title = 'Great Job! 🎉';
+    msg = 'You learned so much! Just a few tiny things to review and you are a pro.';
+  } else if (pct >= 47) {
+    title = 'Good Effort! 💪';
+    msg = "Nice try! Let's review a few topics together and play some more.";
+  } else {
+    title = 'Keep Growing! 🌱';
+    msg = "Every game developer starts somewhere. Let's practise together — you've got this!";
+  }
+  if (timeUp) {
+    title = "Time's Up! ⏰";
+    msg = "The timer ran out — but look at what you answered! Let's review together.";
+  }
+
+  $('result-title').textContent = title;
+  $('result-message').textContent = msg;
+
+  // build review list
+  const reviewBox = $('review-list');
+  reviewBox.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const chosen = state.answers[i];
+    const isCorrect = chosen === q.correct;
+    const item = document.createElement('div');
+    item.className = 'review-item ' + (isCorrect ? 'correct' : 'wrong');
+    const chosenText = chosen !== null ? q.options[chosen] : 'Not answered';
+    const correctText = q.options[q.correct];
+    item.innerHTML =
+      '<div class="ri-head">' +
+        '<span class="ri-status">' + (isCorrect ? 'Correct' : 'Incorrect') + '</span>' +
+        '<span>Q' + (i + 1) + '. ' + q.q + '</span>' +
+      '</div>' +
+      '<div class="ri-answer"><strong>Your answer:</strong> ' + chosenText + '</div>' +
+      (isCorrect ? '' : '<div class="ri-answer"><strong>Correct answer:</strong> ' + correctText + '</div>') +
+      '<div class="ri-explain">' + q.explain + '</div>';
+    reviewBox.appendChild(item);
+  });
+
+  // cert score
+  $('cert-score').textContent = 'Score: ' + correct + ' / ' + total;
+  $('cert-date').textContent = new Date().toLocaleDateString(undefined, {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  showScreen('results');
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+function resetQuiz() {
+  state = {
+    current: 0,
+    answers: new Array(QUESTIONS.length).fill(null),
+    timeLeft: TOTAL_TIME,
+    timerId: null,
+    finished: false
+  };
+  $('progress-fill').style.width = '0%';
+  $('timer-pill').classList.remove('low');
+  showScreen('quiz');
+  renderQuestion();
+  startTimer();
+}
+
+/* =========================================================
+   EVENT LISTENERS
+   ========================================================= */
+$('btn-start').addEventListener('click', () => {
+  resetQuiz();
+});
+
+$('btn-prev').addEventListener('click', goPrev);
+$('btn-next').addEventListener('click', goNext);
+
+$('btn-restart').addEventListener('click', () => {
+  resetQuiz();
+});
+
+$('btn-back-results').addEventListener('click', () => {
+  showScreen('results');
+});
+
+$('btn-print').addEventListener('click', () => {
+  window.print();
+});
+
+/* keyboard: arrow keys for navigation */
+document.addEventListener('keydown', (e) => {
+  if (!screens.quiz.classList.contains('active')) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+</script>
+</body>
+</html>
